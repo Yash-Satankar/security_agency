@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:security_agency/screens/login_otp_screen.dart';
+
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());

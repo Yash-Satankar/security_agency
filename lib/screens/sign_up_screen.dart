@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:security_agency/screens/login_screen.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -122,7 +123,14 @@ class SignUpScreen extends StatelessWidget {
                     const SizedBox(height: 24),
                     Center(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 12, horizontal: 48),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:security_agency/screens/campus_details_screen.dart';
+import 'package:security_agency/screens/introduce_new_campus_screen.dart';
 
 class CampusListPage extends StatelessWidget {
   final List<Map<String, dynamic>> campusDetails = [
@@ -37,6 +38,26 @@ class CampusListPage extends StatelessWidget {
       'title': 'Nyati Elsia',
       'address': 'Kharadi',
       'client': 'Nyati Group',
+      'outstandingAmount': '₹ 10,500.00',
+      'rating': '5 Star',
+      'pbp': '+12',
+      'lastAssociation': '12/01/2024',
+      'imagePath': 'assets/images/non_campus.png',
+    },
+    {
+      'title': 'Raga Foundations',
+      'address': 'MG Road Pune 411028',
+      'client': 'Raga Groups',
+      'outstandingAmount': '₹ 10,500.00',
+      'rating': '5 Star',
+      'pbp': '+12',
+      'lastAssociation': '12/01/2024',
+      'imagePath': 'assets/images/non_campus.png',
+    },
+    {
+      'title': 'Raga Foundations',
+      'address': 'MG Road Pune 411028',
+      'client': 'Raga Groups',
       'outstandingAmount': '₹ 10,500.00',
       'rating': '5 Star',
       'pbp': '+12',
@@ -114,6 +135,7 @@ class CampusListPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: GestureDetector(
+                    onTap: () => showFilterBottomSheet(context),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: 16,
@@ -137,6 +159,15 @@ class CampusListPage extends StatelessWidget {
                 ),
                 Expanded(
                   child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const IntroduceNewCampusScreen(),
+                        ),
+                      );
+                    },
                     child: const Center(child: Text("Introduce New Campus")),
                   ),
                 ),
@@ -145,6 +176,115 @@ class CampusListPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void showFilterBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                  ),
+                  const Text(
+                    'Filter',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 48), // To align center title
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Sort by',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      child: const Text('Received'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      child: const Text('Transferred'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Date',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // Date Picker for "Select from Date"
+                      },
+                      child: const Text('Select from Date'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // Date Picker for "Select to Date"
+                      },
+                      child: const Text('Select to Date'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    // Apply Filters
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.3),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    color: const Color(0xFF225FA6),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Apply',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -244,13 +384,14 @@ class CampusDetailCard extends StatelessWidget {
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Icon(
                         Icons.info,
                         color: Colors.red,
                         size: 12,
                       ),
+                      const SizedBox(width: 4),
                       Text(
                         'Last Association Date: $lastAssociation',
                         style: const TextStyle(fontSize: 10),

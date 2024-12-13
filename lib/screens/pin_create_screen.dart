@@ -14,6 +14,23 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
   String first = '';
   String second = '1';
   bool pinCreated = false;
+  String? enteredPin;
+  String? errorPin;
+
+  bool _validateOtp() {
+    if (enteredPin == null || enteredPin!.length != 4) {
+      setState(() {
+        errorPin = 'Enter a valid PIN';
+      });
+      return false;
+    } else {
+      setState(() {
+        errorPin = null;
+      });
+      return true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -72,6 +89,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                                   length: 4,
                                   onChanged: (value) {
                                     print("Changed: $value");
+                                    enteredPin = value;
                                   },
                                   onCompleted: (value) {
                                     setState(() {
@@ -91,6 +109,12 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                                     inactiveFillColor: Colors.blue[200]!,
                                     selectedFillColor: Colors.red,
                                   ),
+                                  validator: (value) {
+                                    if (value == null || value.length != 4) {
+                                      return "Enter a valid code";
+                                    }
+                                    return null;
+                                  },
                                   backgroundColor: Colors.transparent,
                                   enableActiveFill: true,
                                   textStyle:
@@ -99,6 +123,17 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                 ),
+                                if (errorPin != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: Text(
+                                      errorPin!,
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
                                 const SizedBox(
                                   height: 24,
                                 ),
@@ -118,110 +153,9 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                                 Center(
                                   child: GestureDetector(
                                     onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                          title: const Text(
-                                            "Accounts linked with this number",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          content: SizedBox(
-                                            height: 200,
-                                            child: SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  const Text(
-                                                    "Please select any one of the following office:",
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 24,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Checkbox(
-                                                        value: false,
-                                                        onChanged: (value) {},
-                                                      ),
-                                                      const Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            "Monarch Surveyors",
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 18,
-                                                            ),
-                                                          ),
-                                                          Text("Address"),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Checkbox(
-                                                        value: false,
-                                                        onChanged: (value) {},
-                                                      ),
-                                                      const Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            "Monarch Surveyors",
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 18,
-                                                            ),
-                                                          ),
-                                                          Text("Address"),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          actions: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const DashboardScreen(),
-                                                  ),
-                                                );
-                                              },
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 24,
-                                                        horizontal: 40),
-                                                decoration: const BoxDecoration(
-                                                    color: Colors.orange),
-                                                child: const Text("Proceed"),
-                                              ),
-                                            ),
-                                          ],
-                                          actionsAlignment:
-                                              MainAxisAlignment.center,
-                                        ),
-                                      );
+                                      if (_validateOtp() == true) {
+                                        showAlertDialog(context);
+                                      }
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
@@ -399,6 +333,97 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<dynamic> showAlertDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text(
+          "Accounts linked with this number",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        content: SizedBox(
+          height: 200,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text(
+                  "Please select any one of the following office:",
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: false,
+                      onChanged: (value) {},
+                    ),
+                    const Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Monarch Surveyors",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Text("Address"),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: false,
+                      onChanged: (value) {},
+                    ),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Monarch Surveyors",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Text("Address"),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DashboardScreen(),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
+              decoration: const BoxDecoration(color: Colors.orange),
+              child: const Text("Proceed"),
+            ),
+          ),
+        ],
+        actionsAlignment: MainAxisAlignment.center,
       ),
     );
   }

@@ -13,6 +13,39 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool otpRequested = false;
+  final mobileNumber = TextEditingController();
+  String? errorPhoneNumber;
+  String? receivedOtp;
+  String? errorPinCode;
+
+  bool _validatePhoneNumber() {
+    final phone = mobileNumber.text;
+    if (phone.isEmpty || !RegExp(r'^\d{10}$').hasMatch(phone)) {
+      setState(() {
+        errorPhoneNumber = 'Please enter a valid 10-digit number';
+      });
+      return false;
+    } else {
+      setState(() {
+        errorPhoneNumber = null;
+      });
+      return true;
+    }
+  }
+
+  bool _validateOtp() {
+    if (receivedOtp == null || receivedOtp!.length != 4) {
+      setState(() {
+        errorPinCode = 'Incorrect OTP';
+      });
+      return false;
+    } else {
+      setState(() {
+        errorPinCode = null;
+      });
+      return true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   length: 4,
                                   onChanged: (value) {
                                     print("Changed: $value");
+                                    receivedOtp = value;
                                   },
-                                  onCompleted: (value) {
-                                    print("Completed: $value");
-                                  },
+                                  autoDismissKeyboard: true,
                                   pinTheme: PinTheme(
                                     shape: PinCodeFieldShape.box,
                                     borderRadius: BorderRadius.circular(8),
@@ -96,6 +128,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     inactiveFillColor: Colors.blue[200]!,
                                     selectedFillColor: Colors.red,
                                   ),
+                                  validator: (value) {
+                                    if (value == null || value.length != 4) {
+                                      return "Enter a valid code";
+                                    }
+                                    return null;
+                                  },
                                   backgroundColor: Colors.transparent,
                                   enableActiveFill: true,
                                   textStyle:
@@ -104,6 +142,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                 ),
+                                if (errorPinCode != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: Text(
+                                      errorPinCode!,
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
                                 const SizedBox(height: 48),
                                 const Center(
                                   child: Text(
@@ -131,13 +180,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Center(
                                   child: GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CreatePinScreen(),
-                                        ),
-                                      );
+                                      if (_validateOtp() == true) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CreatePinScreen(),
+                                          ),
+                                        );
+                                      }
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
@@ -185,10 +236,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 const SizedBox(height: 8),
-                                const TextField(
+                                TextField(
+                                  cursorColor: Colors.white,
+                                  style: const TextStyle(color: Colors.white),
+                                  controller: mobileNumber,
                                   decoration: InputDecoration(
+                                    errorText: errorPhoneNumber,
                                     hintText: 'Enter your number',
-                                    hintStyle: TextStyle(color: Colors.white70),
+                                    hintStyle:
+                                        const TextStyle(color: Colors.white70),
                                   ),
                                   keyboardType: TextInputType.phone,
                                 ),
@@ -196,9 +252,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Center(
                                   child: GestureDetector(
                                     onTap: () {
-                                      setState(() {
-                                        otpRequested = true;
-                                      });
+                                      if (_validatePhoneNumber() == true) {
+                                        setState(() {
+                                          otpRequested = true;
+                                        });
+                                      }
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
